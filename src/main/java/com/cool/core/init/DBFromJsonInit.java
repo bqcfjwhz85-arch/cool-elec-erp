@@ -53,6 +53,10 @@ public class DBFromJsonInit {
 
     final private PostgresSequenceSyncService postgresSequenceSyncService;
 
+    final private com.cool.modules.base.mapper.sys.BaseSysUserMapper baseSysUserMapper;
+
+    final private com.cool.modules.base.service.sys.BaseSysPermsService baseSysPermsService;
+
     @Value("${cool.initData}")
     private boolean initData;
 
@@ -72,6 +76,17 @@ public class DBFromJsonInit {
             syncIdentitySequences();
         }
         log.info("数据初始化完成！");
+        
+        // 刷新admin权限
+        try {
+            com.cool.modules.base.entity.sys.BaseSysUserEntity admin = baseSysUserMapper.selectOneByQuery(QueryWrapper.create().eq(com.cool.modules.base.entity.sys.BaseSysUserEntity::getUsername, "admin"));
+            if (admin != null) {
+                baseSysPermsService.refreshPerms(admin.getId());
+                log.info("Admin权限刷新成功");
+            }
+        } catch (Exception e) {
+            log.error("Admin权限刷新失败", e);
+        }
     }
 
     private void syncIdentitySequences() {
@@ -187,10 +202,10 @@ public class DBFromJsonInit {
                 File resourceFile = new File(resource.getURL().getFile());
                 String fileName = prefix + resourceFile.getName();
                 String value = baseSysConfService.getValue(fileName);
-                if (StrUtil.isNotEmpty(value)) {
-                    log.info("{} 菜单数据已初始化过...", fileName);
-                    continue;
-                }
+//                if (StrUtil.isNotEmpty(value)) {
+//                    log.info("{} 菜单数据已初始化过...", fileName);
+//                    continue;
+//                }
                 analysisResources(resource, fileName);
                 initFlag = true;
             }

@@ -6,6 +6,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.json.JSONObject;
 import com.cool.core.annotation.CoolRestController;
+import com.cool.core.annotation.TokenIgnore;
 import com.cool.core.cache.CoolCache;
 import com.cool.core.enums.UserTypeEnum;
 import com.cool.core.eps.CoolEps;
@@ -37,24 +38,28 @@ public class AdminBaseOpenController {
     final private CoolEps coolEps;
     final private CoolCache coolCache;
 
+    @TokenIgnore
     @Operation(summary = "实体信息与路径", description = "系统所有的实体信息与路径，供前端自动生成代码与服务")
     @GetMapping("/eps")
     public R eps() {
         return R.ok(coolEps.getAdmin());
     }
 
+    @TokenIgnore
     @Operation(summary = "获得网页内容的参数值")
     @GetMapping("/html")
     public R html() {
         return R.ok();
     }
 
+    @TokenIgnore
     @Operation(summary = "登录")
     @PostMapping("/login")
     public R login(@RequestBody BaseSysLoginDto baseSysLoginDto) {
         return R.ok(baseSysLoginService.login(baseSysLoginDto));
     }
 
+    @TokenIgnore
     @Operation(summary = "验证码")
     @GetMapping("/captcha")
     public R captcha(@Parameter(description = "类型：svg|base64") @RequestParam(defaultValue = "base64") String type,
@@ -63,12 +68,14 @@ public class AdminBaseOpenController {
         return R.ok(baseSysLoginService.captcha(UserTypeEnum.ADMIN, type, width, height));
     }
 
+    @TokenIgnore
     @Operation(summary = "刷新token")
     @GetMapping("/refreshToken")
     public R refreshToken(String refreshToken) {
         return R.ok(baseSysLoginService.refreshToken(refreshToken));
     }
 
+    @TokenIgnore
     @RequestMapping("/gen")
     @ResponseBody
     public Object genCaptcha(@RequestParam(value = "type", required = false)String type) {
@@ -91,6 +98,7 @@ public class AdminBaseOpenController {
         return CoolPluginInvokers.invoke("tianai", "generateCaptcha", type);
     }
 
+    @TokenIgnore
     @PostMapping("/check")
     @ResponseBody
     public Object checkCaptcha(@RequestAttribute() JSONObject requestParams) {
@@ -108,6 +116,7 @@ public class AdminBaseOpenController {
         return result;
     }
 
+    @TokenIgnore
     @Operation(summary = "验证码类型")
     @GetMapping("/captchaMode")
     public R captchaMode() {

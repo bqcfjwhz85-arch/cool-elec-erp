@@ -87,6 +87,11 @@ public class BaseSysRoleServiceImpl extends BaseServiceImpl<BaseSysRoleMapper, B
 
     @Override
     public Object list(JSONObject requestParams, QueryWrapper queryWrapper) {
+        Boolean ignorePermission = requestParams.getBool("ignorePermission", false);
+        // 如果ignorePermission为true，则返回所有角色（用于审批流配置等需要查看所有角色的场景）
+        if (ignorePermission) {
+            return baseSysRoleMapper.selectListByQuery(queryWrapper.ne(BaseSysRoleEntity::getId, 1L));
+        }
         return baseSysRoleMapper.selectListByQuery(queryWrapper.ne(BaseSysRoleEntity::getId, 1L).and(qw -> {
             JSONObject object = CoolSecurityUtil.getAdminUserInfo(requestParams);
             qw.eq(BaseSysRoleEntity::getUserId, object.get("userId")).or(w -> {

@@ -102,20 +102,12 @@ public class JwtSecurityConfig {
                 });
             }
             if (tokenIgnore != null) {
-                StringBuilder url = new StringBuilder();
-                RequestMapping classRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getBeanType(), RequestMapping.class);
-                if (classRequestMapping != null) {
-                    for (String path : classRequestMapping.value()) {
-                        url.append(path);
-                    }
-                }
                 if (requestMappingInfo.getPathPatternsCondition() == null) {
                     return;
                 }
                 for (PathPattern path : requestMappingInfo.getPathPatternsCondition().getPatterns()) {
-                    url.append(path);
+                    ignoredUrlsProperties.getAdminAuthUrls().add(path.getPatternString());
                 }
-                ignoredUrlsProperties.getAdminAuthUrls().add(url.toString());
             }
         });
     }

@@ -53,15 +53,34 @@ public class BaseSysUserServiceImpl extends BaseServiceImpl<BaseSysUserMapper, B
         String keyWord = requestParams.getStr("keyWord");
         Integer status = requestParams.getInt("status");
         Long[] departmentIds = requestParams.get("departmentIds", Long[].class);
-        CoolPreconditions.checkEmpty(departmentIds);
-        Collection<Long> intersectionDep = Convert.toList(Long.class, departmentIds);
-        if (!CoolSecurityUtil.isSuperAdmin()) {
-            // 用户的部门权限
-            Long[] permsDepartmentArr = baseSysPermsService.getDepartmentIdsByUserId(CoolSecurityUtil.getCurrentUserId());
-            CoolPreconditions.returnNoData(permsDepartmentArr);
-            // 取交集
-            intersectionDep = CollUtil.intersection(Convert.toList(Long.class, departmentIds), Convert.toList(Long.class, permsDepartmentArr));
-            CoolPreconditions.returnNoData(intersectionDep);
+        Boolean ignorePermission = requestParams.getBool("ignorePermission", false);
+        
+        Collection<Long> intersectionDep = null;
+        
+        // 如果ignorePermission为true，则获取所有部门（用于审批流配置等需要查看所有用户的场景）
+        if (ignorePermission) {
+            // 获取所有部门ID
+            List<BaseSysDepartmentEntity> allDepts = baseSysDepartmentMapper.selectAll();
+            intersectionDep = allDepts.stream().map(BaseSysDepartmentEntity::getId).collect(java.util.stream.Collectors.toList());
+            if (intersectionDep.isEmpty()) {
+                CoolPreconditions.returnNoData(null);
+            }
+        } else {
+            // 如果未提供departmentIds，使用当前用户的部门权限
+            if (ArrayUtil.isEmpty(departmentIds)) {
+                departmentIds = baseSysPermsService.loginDepartmentIds();
+                CoolPreconditions.returnNoData(departmentIds);
+            }
+            
+            intersectionDep = Convert.toList(Long.class, departmentIds);
+            if (!CoolSecurityUtil.isSuperAdmin()) {
+                // 用户的部门权限
+                Long[] permsDepartmentArr = baseSysPermsService.getDepartmentIdsByUserId(CoolSecurityUtil.getCurrentUserId());
+                CoolPreconditions.returnNoData(permsDepartmentArr);
+                // 取交集
+                intersectionDep = CollUtil.intersection(Convert.toList(Long.class, departmentIds), Convert.toList(Long.class, permsDepartmentArr));
+                CoolPreconditions.returnNoData(intersectionDep);
+            }
         }
 
         if (DatabaseDialectUtils.isPostgresql()) {

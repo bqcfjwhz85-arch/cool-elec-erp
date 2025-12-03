@@ -3,6 +3,7 @@ package com.cool.core.init;
 import com.cool.core.leaf.IDGenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  **/
 @Slf4j
 @Component
+@ConditionalOnBean(IDGenService.class)
 @RequiredArgsConstructor
 public class IDGenInit {
 

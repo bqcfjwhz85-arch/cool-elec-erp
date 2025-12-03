@@ -1,16 +1,19 @@
 server:
-  port: 8001
+  port: 8011
   servlet:
     context-path: /
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/plain
+  tomcat:
+    socket:
+      wait-time: 1
 
 spring:
   application:
     name: cool-admin-java
   profiles:
-    active: @spring.active@
+    active: local
   thymeleaf:
     cache: false
     prefix: classpath:/templates/
@@ -137,7 +140,7 @@ cool:
     # 本地上传配置
     local:
       # 文件访问地址
-      base-url: http://127.0.0.1:${server.port}/upload
+      base-url: /upload
   # 系统日志请求参数超过1024字节 就不记录,避免日志过大
   log:
     # 请求参数最大字节,超过请求参数不记录

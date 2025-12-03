@@ -1,0 +1,65 @@
+
+[
+    {
+        "name": "字段管理",
+        "router": "/config/field",
+        "perms": "config:field:page",
+        "type": 1,
+        "icon": "icon-form",
+        "orderNum": 99,
+        "viewPath": "modules/field/views/list.vue",
+        "keepAlive": true,
+        "isShow": true,
+        "parentId": 2,
+        "childMenus": [
+            {
+                "name": "新增",
+                "router": null,
+                "perms": "config:field:add",
+                "type": 2,
+                "icon": null,
+                "orderNum": 1,
+                "viewPath": null,
+                "keepAlive": false,
+                "isShow": true,
+                "childMenus": []
+            },
+            {
+                "name": "删除",
+                "router": null,
+                "perms": "config:field:delete",
+                "type": 2,
+                "icon": null,
+                "orderNum": 2,
+                "viewPath": null,
+                "keepAlive": false,
+                "isShow": true,
+                "childMenus": []
+            },
+            {
+                "name": "修改",
+                "router": null,
+                "perms": "config:field:update",
+                "type": 2,
+                "icon": null,
+                "orderNum": 3,
+                "viewPath": null,
+                "keepAlive": false,
+                "isShow": true,
+                "childMenus": []
+            },
+            {
+                "name": "查询",
+                "router": null,
+                "perms": "config:field:page,config:field:list,config:field:info",
+                "type": 2,
+                "icon": null,
+                "orderNum": 4,
+                "viewPath": null,
+                "keepAlive": false,
+                "isShow": true,
+                "childMenus": []
+            }
+        ]
+    }
+]
